@@ -862,10 +862,10 @@
           var average = values / length;
           devices.skylab.measured_value = average;
 
-          if(average === 50){
+          if(average < 50){
               average += 10;
           }
-          else if(average === 65){
+          else if(average < 65){
               average += 10;
           }
 
