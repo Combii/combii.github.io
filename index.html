@@ -862,9 +862,8 @@
           var average = values / length;
           devices.skylab.measured_value = average;
 
-          if(average > 30){
-              average += average / 2;
-          }
+          average += average / 1.5;
+          
 
           runningAverage.unshift(average);
           runningAverage.pop();
