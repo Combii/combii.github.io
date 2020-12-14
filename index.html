@@ -432,7 +432,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 Measurement limit</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">100db</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">65db</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-satellite-dish fa-2x text-black-300"></i>
@@ -673,26 +673,30 @@
         zoomOffset: -1,
         accessToken: 'your.mapbox.access.token'
     }).addTo(mymap);
-
+    var updateAllDevices=0;
     drawDevices(devices,mymap);
     updateData(randomData=false);
     window.setInterval(function(){
         /// call your function here
-        
-        updateData(randomData=true);
+        updateAllDevices++;
+        console.log(updateAllDevices)
+        updateAllDevices=updateData(randomData=updateAllDevices);
+
     }, 3000);
 
     
 
-    function updateData(randomData=true){
+    function updateData(updateAllDevices=0){
         var dbThreshHold=95;
         var dbYellowThreshold = 60;
-
+        var deviceDelay= 5;
 
         var totalSignalStrength = 0;
         var randomNumber = 1;
-        if (randomData){
+        if (updateAllDevices==deviceDelay){
+            console.log("randomdata")
             randomNumber = 1-(0.05-(Math.random() * 0.1)); 
+            updateAllDevices=0;
         }
         devices['skylab']['measured_value']=getAvg(runningAverage);
         for(var key in devices) {
@@ -711,7 +715,7 @@
 
             if (devices[key].measured_value>=dbThreshHold){
                 
-                element_level.innerHTML="> 100 db";
+                element_level.innerHTML="> 65 db";
                 
                 element_width.classList.remove("bg-success");
                 element_width.classList.remove("bg-warning");
@@ -748,7 +752,7 @@
             document.getElementById("total_signal_quality").innerHTML="Poor"
         }
 
-    
+        return updateAllDevices;
     }
 
     
@@ -861,13 +865,9 @@
 
           var average = values / length;
           devices.skylab.measured_value = average;
-
-          average += average / 1.5;
-          
-
           runningAverage.unshift(average);
           runningAverage.pop();
-          console.log(average)
+          //console.log(average)
           
         }
     },
